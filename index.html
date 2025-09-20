@@ -30,7 +30,7 @@
             background-color: var(--color-blanco);
             color: var(--color-negro);
             line-height: 1.6;
-            font-size: 16px; /* Tamaño de fuente base para evitar zoom */
+            font-size: 16px;
         }
         
         /* Header */
@@ -134,7 +134,7 @@
             border: 1px solid var(--color-gris-medio);
             border-radius: 4px;
             font-family: 'Libre Baskerville', serif;
-            font-size: 16px; /* Prevenir zoom en iOS */
+            font-size: 16px;
         }
         
         .category-filter {
@@ -193,36 +193,6 @@
             object-fit: cover;
             border-bottom: 1px solid var(--color-gris-medio);
             transition: opacity 0.3s;
-        }
-        
-        .image-nav {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-            transform: translateY(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: none; /* Ocultar navegación de imágenes para simplificar */
-        }
-        
-        .product-image-container:hover .image-nav {
-            opacity: 1;
-        }
-        
-        .nav-btn {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         
         .product-info {
@@ -430,7 +400,7 @@
             border: 1px solid var(--color-gris-medio);
             border-radius: 4px;
             font-family: 'Libre Baskerville', serif;
-            font-size: 16px; /* Prevenir zoom en iOS */
+            font-size: 16px;
         }
         
         .checkout-buttons {
@@ -1194,7 +1164,8 @@
         // Variables globales
         let cart = [];
         let currentDirectProduct = null;
-        const ADMIN_KEY = "proveedor2024"; // Clave estática para acceso a precios de proveedor
+        const ADMIN_KEY = "Wic@el18"; // Clave estática para acceso a precios de proveedor
+        const NOSTR_PUBKEY = "npub15muz347annw2rwecp3zrca00cjd880ev94yzf747ra824kve7khsjc5gxr"; // Reemplazar con la clave pública real de la tienda
         
         const cartIcon = document.getElementById('cartIcon');
         const cartCount = document.getElementById('cartCount');
@@ -1669,6 +1640,27 @@
             return message;
         }
 
+        // Enviar mensaje a través de Nostr
+        function sendNostrMessage(message, isDirect = false) {
+            // Crear un enlace con el protocolo nostr
+            const content = encodeURIComponent(message);
+            const nostrLink = `nostr:${NOSTR_PUBKEY}?text=${content}`;
+            
+            // Intentar abrir el cliente Nostr
+            window.location.href = nostrLink;
+            
+            // Si no se abre el cliente Nostr, mostrar un mensaje alternativo
+            setTimeout(() => {
+                if (!isDirect) {
+                    showNotification('Si no se abrió tu cliente Nostr, cópia este mensaje y pégalo manualmente');
+                    navigator.clipboard.writeText(message);
+                } else {
+                    showNotification('Mensaje preparado para Nostr. Si no se abrió automáticamente, cópialo manualmente');
+                    navigator.clipboard.writeText(message);
+                }
+            }, 1000);
+        }
+
         // Cargar tabla de precios de proveedor
         function loadSupplierTable() {
             supplierTableBody.innerHTML = '';
@@ -1742,16 +1734,7 @@
             }
             
             const message = generateNostrMessage();
-            // Simular envío por Nostr (en un caso real, se integraría con la librería Nostr)
-            showNotification('Pedido preparado para enviar por Nostr. Copiando al portapapeles...');
-            
-            // Copiar al portapapeles para que el usuario pueda pegarlo en su cliente Nostr
-            navigator.clipboard.writeText(message).then(() => {
-                showNotification('Mensaje de pedido copiado al portapapeles. Pégalo en tu cliente Nostr.');
-            }).catch(err => {
-                console.error('Error al copiar al portapapeles: ', err);
-                showNotification('Error al copiar el mensaje. Intenta nuevamente.');
-            });
+            sendNostrMessage(message);
         });
 
         // Event Listeners para compra directa
@@ -1801,16 +1784,7 @@
             }
             
             const message = generateDirectNostrMessage();
-            // Simular envío por Nostr (en un caso real, se integraría con la librería Nostr)
-            showNotification('Pedido directo preparado para enviar por Nostr. Copiando al portapapeles...');
-            
-            // Copiar al portapapeles para que el usuario pueda pegarlo en su cliente Nostr
-            navigator.clipboard.writeText(message).then(() => {
-                showNotification('Mensaje de pedido directo copiado al portapapeles. Pégalo en tu cliente Nostr.');
-            }).catch(err => {
-                console.error('Error al copiar al portapapeles: ', err);
-                showNotification('Error al copiar el mensaje. Intenta nuevamente.');
-            });
+            sendNostrMessage(message, true);
         });
 
         searchInput.addEventListener('input', filterProducts);
