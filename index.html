@@ -6,6 +6,7 @@
     <title>Contraentrega Cali</title>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
     <style>
         :root {
             --color-blanco: #ffffff;
@@ -638,6 +639,90 @@
             background-color: rgba(0, 0, 0, 0.02);
         }
         
+        /* Nostr Key Modal */
+        .nostr-key-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nostr-key-content {
+            background-color: var(--color-blanco);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            padding: 2rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .nostr-key-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-gris-medio);
+        }
+        
+        .close-nostr-key {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .nostr-key-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .nostr-key-form label {
+            font-weight: 700;
+        }
+        
+        .nostr-key-form input {
+            padding: 0.8rem;
+            border: 1px solid var(--color-gris-medio);
+            border-radius: 4px;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 16px;
+        }
+        
+        .nostr-key-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .nostr-key-buttons button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1rem;
+        }
+        
+        .nostr-key-submit {
+            background-color: var(--color-purpura);
+            color: white;
+        }
+        
+        .nostr-key-cancel {
+            background-color: var(--color-gris-medio);
+            color: var(--color-negro);
+        }
+        
         /* Footer */
         footer {
             background-color: var(--color-negro);
@@ -728,7 +813,7 @@
                 flex-direction: column;
             }
             
-            .cart-content, .direct-purchase-content {
+            .cart-content, .direct-purchase-content, .nostr-key-content {
                 width: 95%;
                 padding: 1rem;
             }
@@ -788,6 +873,10 @@
             .add-to-cart, .buy-now {
                 padding: 0.6rem;
                 font-size: 0.8rem;
+            }
+            
+            .nostr-key-buttons {
+                flex-direction: column;
             }
         }
         
@@ -959,7 +1048,7 @@
                     <i class="fas fa-envelope"></i> Enviar pedido por Correo
                 </button>
                 <button class="checkout-btn nostr-btn" id="nostrBtn" disabled>
-                    <i class="fas fa-key"></i> Enviar pedido por Nostr
+                    <i class="fas fa-key"></i> Finalizar compra por Nostr
                 </button>
                 <button class="checkout-btn continue-shopping" id="continueShopping">Seguir comprando</button>
             </div>
@@ -1006,9 +1095,35 @@
                     <i class="fas fa-envelope"></i> Enviar pedido por Correo
                 </button>
                 <button class="checkout-btn nostr-btn" id="directNostrBtn" disabled>
-                    <i class="fas fa-key"></i> Enviar pedido por Nostr
+                    <i class="fas fa-key"></i> Comprar por Nostr
                 </button>
                 <button class="checkout-btn continue-shopping" id="cancelDirectPurchase">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nostr Key Modal -->
+    <div class="nostr-key-modal" id="nostrKeyModal">
+        <div class="nostr-key-content">
+            <div class="nostr-key-header">
+                <h2>Configuración de Nostr</h2>
+                <button class="close-nostr-key" id="closeNostrKey">&times;</button>
+            </div>
+            
+            <div class="nostr-key-form">
+                <label for="nostrPrivateKey">Clave Privada (nsec) - Opcional</label>
+                <input type="password" id="nostrPrivateKey" placeholder="nsec1...">
+                
+                <label for="nostrRelay">Relay de Nostr</label>
+                <input type="text" id="nostrRelay" value="wss://relay.damus.io" placeholder="wss://relay.url">
+                
+                <label for="storePublicKey">Clave Pública de la Tienda (npub)</label>
+                <input type="text" id="storePublicKey" value="npub1contraentregaabc1234567890xyz" placeholder="npub1...">
+                
+                <div class="nostr-key-buttons">
+                    <button class="nostr-key-submit" id="nostrKeySubmit">Enviar Pedido</button>
+                    <button class="nostr-key-cancel" id="nostrKeyCancel">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1164,8 +1279,8 @@
         // Variables globales
         let cart = [];
         let currentDirectProduct = null;
-        const ADMIN_KEY = "Wic@el18"; // Clave estática para acceso a precios de proveedor
-        const NOSTR_PUBKEY = "npub15muz347annw2rwecp3zrca00cjd880ev94yzf747ra824kve7khsjc5gxr"; // Reemplazar con la clave pública real de la tienda
+        let isDirectPurchase = false;
+        const ADMIN_KEY = "proveedor2024"; // Clave estática para acceso a precios de proveedor
         
         const cartIcon = document.getElementById('cartIcon');
         const cartCount = document.getElementById('cartCount');
@@ -1203,6 +1318,15 @@
         const adminAccessBtn = document.getElementById('adminAccessBtn');
         const supplierTableContainer = document.getElementById('supplierTableContainer');
         const supplierTableBody = document.getElementById('supplierTableBody');
+        
+        // Elementos para modal de Nostr
+        const nostrKeyModal = document.getElementById('nostrKeyModal');
+        const closeNostrKey = document.getElementById('closeNostrKey');
+        const nostrPrivateKey = document.getElementById('nostrPrivateKey');
+        const nostrRelay = document.getElementById('nostrRelay');
+        const storePublicKey = document.getElementById('storePublicKey');
+        const nostrKeySubmit = document.getElementById('nostrKeySubmit');
+        const nostrKeyCancel = document.getElementById('nostrKeyCancel');
 
         // Cargar productos en la página
         function loadProducts(productsToLoad) {
@@ -1218,7 +1342,7 @@
                         </div>
                     </a>
                     <div class="product-info">
-                        <a href="${product.productUrl}" class="product-link" target="_blank">
+                        <a href="${product.productUrl" class="product-link" target="_blank">
                             <h3 class="product-title">${product.title}</h3>
                         </a>
                         <p class="product-price">$${product.price.toFixed(2)}</p>
@@ -1259,6 +1383,7 @@
             if (!product) return;
             
             currentDirectProduct = product;
+            isDirectPurchase = true;
             
             // Mostrar información del producto en el modal
             directPurchaseProduct.innerHTML = `
@@ -1533,18 +1658,25 @@
         function generateNostrMessage() {
             const remitente = getRemitenteInfo();
             
-            let message = `Nuevo pedido de ${customerName.value}:\n\n`;
+            let message = `Nuevo pedido de ${isDirectPurchase ? directCustomerName.value : customerName.value}:\n\n`;
             
-            message += "PRODUCTOS:\n";
-            cart.forEach(item => {
-                message += `- ${item.title} x${item.quantity}: $${(item.price * item.quantity).toFixed(2)}\n`;
-            });
+            if (isDirectPurchase && currentDirectProduct) {
+                message += "PRODUCTO:\n";
+                message += `- ${currentDirectProduct.title}: $${currentDirectProduct.price.toFixed(2)}\n\n`;
+                message += `TOTAL: $${currentDirectProduct.price.toFixed(2)}\n\n`;
+            } else {
+                message += "PRODUCTOS:\n";
+                cart.forEach(item => {
+                    message += `- ${item.title} x${item.quantity}: $${(item.price * item.quantity).toFixed(2)}\n`;
+                });
+                
+                message += `\nTOTAL: $${cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}\n\n`;
+            }
             
-            message += `\nTOTAL: $${cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}\n\n`;
             message += "INFORMACIÓN DEL CLIENTE:\n";
-            message += `Nombre: ${customerName.value}\n`;
-            message += `Teléfono: ${customerPhone.value}\n`;
-            message += `Dirección: ${customerAddress.value}\n\n`;
+            message += `Nombre: ${isDirectPurchase ? directCustomerName.value : customerName.value}\n`;
+            message += `Teléfono: ${isDirectPurchase ? directCustomerPhone.value : customerPhone.value}\n`;
+            message += `Dirección: ${isDirectPurchase ? directCustomerAddress.value : customerAddress.value}\n\n`;
             
             message += "INFORMACIÓN DEL REMITENTE:\n";
             message += `Negocio: ${remitente.nombre}\n`;
@@ -1616,49 +1748,85 @@
             return encodeURIComponent(message);
         }
 
-        // Generar mensaje de Nostr para compra directa
-        function generateDirectNostrMessage() {
-            const remitente = getRemitenteInfo();
-            
-            let message = `Nuevo pedido directo de ${directCustomerName.value}:\n\n`;
-            
-            message += "PRODUCTO:\n";
-            message += `- ${currentDirectProduct.title}: $${currentDirectProduct.price.toFixed(2)}\n\n`;
-            
-            message += `TOTAL: $${currentDirectProduct.price.toFixed(2)}\n\n`;
-            message += "INFORMACIÓN DEL CLIENTE:\n";
-            message += `Nombre: ${directCustomerName.value}\n`;
-            message += `Teléfono: ${directCustomerPhone.value}\n`;
-            message += `Dirección: ${directCustomerAddress.value}\n\n`;
-            
-            message += "INFORMACIÓN DEL REMITENTE:\n";
-            message += `Negocio: ${remitente.nombre}\n`;
-            message += `Correo: ${remitente.correo}\n`;
-            message += `Dirección: ${remitente.direccion}\n`;
-            message += `Teléfono: ${remitente.telefono}`;
-            
-            return message;
-        }
-
         // Enviar mensaje a través de Nostr
-        function sendNostrMessage(message, isDirect = false) {
-            // Crear un enlace con el protocolo nostr
-            const content = encodeURIComponent(message);
-            const nostrLink = `nostr:${NOSTR_PUBKEY}?text=${content}`;
+        async function sendNostrMessage() {
+            const privateKey = nostrPrivateKey.value.trim();
+            const relayUrl = nostrRelay.value.trim();
+            const storePubKey = storePublicKey.value.trim();
+            const message = generateNostrMessage();
             
-            // Intentar abrir el cliente Nostr
-            window.location.href = nostrLink;
+            if (!relayUrl) {
+                showNotification('Por favor, ingresa un relay válido');
+                return;
+            }
             
-            // Si no se abre el cliente Nostr, mostrar un mensaje alternativo
-            setTimeout(() => {
-                if (!isDirect) {
-                    showNotification('Si no se abrió tu cliente Nostr, cópia este mensaje y pégalo manualmente');
-                    navigator.clipboard.writeText(message);
+            try {
+                let pubkey;
+                
+                if (privateKey) {
+                    // Usar la clave privada proporcionada
+                    if (!privateKey.startsWith('nsec1')) {
+                        showNotification('Formato de clave privada inválido. Debe comenzar con nsec1');
+                        return;
+                    }
+                    
+                    try {
+                        const {data} = Nostr.nip19.decode(privateKey);
+                        const signer = Nostr.getNip07Signer();
+                        pubkey = Nostr.getPublicKey(data);
+                    } catch (error) {
+                        showNotification('Error al decodificar la clave privada');
+                        console.error(error);
+                        return;
+                    }
                 } else {
-                    showNotification('Mensaje preparado para Nostr. Si no se abrió automáticamente, cópialo manualmente');
-                    navigator.clipboard.writeText(message);
+                    // Intentar usar extensión NIP-07 (como Alby)
+                    try {
+                        const signer = Nostr.getNip07Signer();
+                        pubkey = await signer.getPublicKey();
+                    } catch (error) {
+                        showNotification('No se detectó extensión NIP-07. Por favor, instala Alby o ingresa una clave privada manualmente');
+                        return;
+                    }
                 }
-            }, 1000);
+                
+                // Crear evento
+                const event = {
+                    kind: 1,
+                    created_at: Math.floor(Date.now() / 1000),
+                    tags: storePubKey ? [['p', storePubKey]] : [],
+                    content: message,
+                    pubkey: pubkey
+                };
+                
+                // Firmar evento
+                let signedEvent;
+                if (privateKey) {
+                    const {data} = Nostr.nip19.decode(privateKey);
+                    signedEvent = await Nostr.signEvent(event, data);
+                } else {
+                    const signer = Nostr.getNip07Signer();
+                    signedEvent = await signer.signEvent(event);
+                }
+                
+                // Publicar en relay
+                const relay = await Nostr.Relay.connect(relayUrl);
+                await relay.publish(signedEvent);
+                relay.close();
+                
+                showNotification('¡Pedido enviado correctamente por Nostr!');
+                nostrKeyModal.style.display = 'none';
+                
+                if (isDirectPurchase) {
+                    directPurchaseModal.style.display = 'none';
+                } else {
+                    cartModal.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error al enviar por Nostr:', error);
+                showNotification('Error al enviar el pedido. Por favor, revisa tu configuración');
+            }
         }
 
         // Cargar tabla de precios de proveedor
@@ -1733,8 +1901,8 @@
                 return;
             }
             
-            const message = generateNostrMessage();
-            sendNostrMessage(message);
+            isDirectPurchase = false;
+            nostrKeyModal.style.display = 'flex';
         });
 
         // Event Listeners para compra directa
@@ -1783,8 +1951,21 @@
                 return;
             }
             
-            const message = generateDirectNostrMessage();
-            sendNostrMessage(message, true);
+            isDirectPurchase = true;
+            nostrKeyModal.style.display = 'flex';
+        });
+
+        // Event Listeners para modal de Nostr
+        closeNostrKey.addEventListener('click', () => {
+            nostrKeyModal.style.display = 'none';
+        });
+
+        nostrKeyCancel.addEventListener('click', () => {
+            nostrKeyModal.style.display = 'none';
+        });
+
+        nostrKeySubmit.addEventListener('click', () => {
+            sendNostrMessage();
         });
 
         searchInput.addEventListener('input', filterProducts);
@@ -1830,6 +2011,9 @@
             }
             if (e.target === directPurchaseModal) {
                 directPurchaseModal.style.display = 'none';
+            }
+            if (e.target === nostrKeyModal) {
+                nostrKeyModal.style.display = 'none';
             }
         });
 
