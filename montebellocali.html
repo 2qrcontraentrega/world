@@ -6,6 +6,7 @@
     <title>Contraentrega Cali</title>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
     <style>
         :root {
             --color-blanco: #ffffff;
@@ -16,6 +17,7 @@
             --color-verde: #25D366;
             --color-azul: #007bff;
             --color-rojo: #dc3545;
+            --color-purpura: #8a2be2;
         }
         
         * {
@@ -29,7 +31,7 @@
             background-color: var(--color-blanco);
             color: var(--color-negro);
             line-height: 1.6;
-            font-size: 16px; /* Tamaño de fuente base para evitar zoom */
+            font-size: 16px;
         }
         
         /* Header */
@@ -133,7 +135,7 @@
             border: 1px solid var(--color-gris-medio);
             border-radius: 4px;
             font-family: 'Libre Baskerville', serif;
-            font-size: 16px; /* Prevenir zoom en iOS */
+            font-size: 16px;
         }
         
         .category-filter {
@@ -192,36 +194,6 @@
             object-fit: cover;
             border-bottom: 1px solid var(--color-gris-medio);
             transition: opacity 0.3s;
-        }
-        
-        .image-nav {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-            transform: translateY(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: none; /* Ocultar navegación de imágenes para simplificar */
-        }
-        
-        .product-image-container:hover .image-nav {
-            opacity: 1;
-        }
-        
-        .nav-btn {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         
         .product-info {
@@ -429,7 +401,7 @@
             border: 1px solid var(--color-gris-medio);
             border-radius: 4px;
             font-family: 'Libre Baskerville', serif;
-            font-size: 16px; /* Prevenir zoom en iOS */
+            font-size: 16px;
         }
         
         .checkout-buttons {
@@ -490,6 +462,20 @@
         }
         
         .email-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .nostr-btn {
+            background-color: var(--color-purpura);
+            color: white;
+        }
+        
+        .nostr-btn:hover {
+            background-color: #6a1cb9;
+        }
+        
+        .nostr-btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
@@ -568,6 +554,91 @@
             margin-bottom: 0;
         }
         
+        /* Admin Access Section */
+        .admin-access {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--color-gris-claro);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .admin-access h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .admin-form input {
+            padding: 0.8rem;
+            border: 1px solid var(--color-gris-medio);
+            border-radius: 4px;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 16px;
+        }
+        
+        .admin-form button {
+            padding: 0.8rem;
+            background-color: var(--color-negro);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .admin-form button:hover {
+            background-color: var(--color-gris-oscuro);
+        }
+        
+        /* Supplier Table */
+        .supplier-table-container {
+            display: none;
+            margin: 2rem 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--color-gris-medio);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .supplier-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .supplier-table th,
+        .supplier-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-gris-medio);
+        }
+        
+        .supplier-table th {
+            background-color: var(--color-gris-claro);
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+        }
+        
+        .supplier-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .supplier-table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
         /* Footer */
         footer {
             background-color: var(--color-negro);
@@ -595,7 +666,7 @@
             font-size: 1.2rem;
         }
         
-        .footer-section p, .footer-section a {
+        .footer-section p, .footer-hsection a {
             margin-bottom: 0.5rem;
             color: var(--color-gris-medio);
             text-decoration: none;
@@ -670,6 +741,15 @@
             /* Ajustes para evitar zoom en formularios móviles */
             input, select, textarea {
                 font-size: 16px !important;
+            }
+            
+            .checkout-buttons {
+                gap: 0.5rem;
+            }
+            
+            .checkout-btn {
+                padding: 0.8rem;
+                font-size: 0.9rem;
             }
         }
         
@@ -773,39 +853,59 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>MARKETPLACE</h1>
+        <h1>Afiliado #2</h1>
         <p>CONTRAENTREGA CALI, VALLE DEL CAUCA, COLOMBIA</p>
     </section>
 
     <!-- Main Content -->
     <div class="container">
+        <!-- Admin Access Section -->
+        <div class="admin-access">
+            <h2>Acceso Proveedores</h2>
+            <div class="admin-form">
+                <input type="password" id="adminKey" placeholder="Ingresa la clave de acceso">
+                <button id="adminAccessBtn">Acceder</button>
+            </div>
+        </div>
+
+        <!-- Supplier Table -->
+        <div class="supplier-table-container" id="supplierTableContainer">
+            <table class="supplier-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio Proveedor</th>
+                        <th>Precio Venta</th>
+                        <th>Proveedor</th>
+                        <th>Margen</th>
+                    </tr>
+                </thead>
+                <tbody id="supplierTableBody">
+                    <!-- Los datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
         <!-- Filtros -->
         <div class="filters">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Buscar por categoría...">
             </div>
             <div class="category-filter">
-                <button class="category-btn active" data-category="drogueria">Droguería</button>
-                <button class="category-btn" data-category="tecnologia">Tecnología</button>
-                <button class="category-btn" data-category="electrodomesticos">Electrodomésticos</button>
+                <button class="category-btn active" data-category="cocina">Cocina</button>
+                <button class="category-btn" data-category="belleza">Belleza</button>
                 <button class="category-btn" data-category="hogar">Hogar</button>
-                <button class="category-btn active" data-category="deportes">Deportes</button>
+                <button class="category-btn" data-category="vehiculos">Vehiculos</button>
+                <button class="category-btn active" data-category="mascotas">Mascotas</button>
                 <button class="category-btn" data-category="moda">Moda</button>
-                <button class="category-btn" data-category="accesorios-para-vehiculos">Accesorios para Vehículos</button>
-                <button class="category-btn" data-category="belleza-y-cuidado-personal">Belleza y Cuidado Personal</button>
-                <button class="category-btn active" data-category="salud-y-equipamiento-medico">Salud y Equipamiento Médico</button>
-                <button class="category-btn" data-category="juguetes-y-bebes">Juguetes y Bebés</button>
-                <button class="category-btn" data-category="animales-y-mascotas">Animales y Mascotas</button>
-                <button class="category-btn" data-category="industrias-y-oficinas">Industrias y Oficinas</button>
-                <button class="category-btn active" data-category="inmuebles">Inmuebles</button>
-                <button class="category-btn" data-category="vehiculos">Vehículos</button>
-                <button class="category-btn" data-category="servicios">Servicios</button>
-                <button class="category-btn" data-category="agro">Agro</button>
-                <button class="category-btn active" data-category="alimentos-y-bebidas">Alimentos y Bebidas</button>
-                <button class="category-btn" data-category="libros-revistas-comics">Libros, Revistas y Comics</button>
-                <button class="category-btn" data-category="instrumentos-musicales">Instrumentos Musicales</button>
-                <button class="category-btn" data-category="antiguedades-y-colecciones">Antigüedades y Colecciones</button>
-                <button class="category-btn" data-category="arte-y-artesanias">Arte y Artesanías</button>
+                <button class="category-btn" data-category="bienestar">Bienestar</button>
+                <button class="category-btn" data-category="infantil">Infantil</button>
+                <button class="category-btn active" data-category="deporte">Deporte</button>
+                <button class="category-btn" data-category="Gadgets">Gadgets</button>
+                <button class="category-btn" data-category="tecnologia">Tecnología</button>
+                <button class="category-btn" data-category="packing-list">Packing List</button>
             </div>
         </div>
 
@@ -859,6 +959,9 @@
                 <button class="checkout-btn email-btn" id="emailBtn" disabled>
                     <i class="fas fa-envelope"></i> Enviar pedido por Correo
                 </button>
+                <button class="checkout-btn nostr-btn" id="nostrBtn" disabled>
+                    <i class="fas fa-key"></i> Finalizar compra por Nostr
+                </button>
                 <button class="checkout-btn continue-shopping" id="continueShopping">Seguir comprando</button>
             </div>
         </div>
@@ -903,6 +1006,9 @@
                 <button class="checkout-btn email-btn" id="directEmailBtn" disabled>
                     <i class="fas fa-envelope"></i> Enviar pedido por Correo
                 </button>
+                <button class="checkout-btn nostr-btn" id="directNostrBtn" disabled>
+                    <i class="fas fa-key"></i> Comprar por Nostr
+                </button>
                 <button class="checkout-btn continue-shopping" id="cancelDirectPurchase">Cancelar</button>
             </div>
         </div>
@@ -943,29 +1049,31 @@
         // Base de datos de productos (simulada)
         const products = [
             {
-  "id": 1,
-  "title": "Auriculares Inalámbricos",
-  "price": 149.99,
-  "description": "Auriculares con cancelación de ruido y 20h de batería",
-  "category": "tecnologia",
-  "supplier": "HogarTotal Ltda.",
-  "warehousePrice": 49.99,
-  "productUrl": "https://ejemplo.com/productos/auriculares-inalambricos",
-  "images": [
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-  ]
-  },
+                id: 1,
+                title: "Auriculares Inalámbricos",
+                price: 149.99,
+                description: "Auriculares con cancelación de ruido y 20h de batería",
+                category: "tecnologia",
+                supplier: "adma cali cra 83b #14-120 el ingenio 3234513993",
+                warehousePrice: 49.99,
+                productUrl: "https://ejemplo.com/productos/auriculares-inalambricos",
+                images: [
+                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                    "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                ]
+            },
             {
                 id: 2,
                 title: "Smartwatch Deportivo",
                 price: 199.99,
                 description: "Reloj inteligente con monitor de ritmo cardíaco y GPS",
                 category: "tecnologia",
+                supplier: "tecnomarket cali cra 25 #12-45 3156789023",
+                warehousePrice: 79.99,
                 productUrl: "https://ejemplo.com/productos/smartwatch-deportivo",
                 images: [
                     "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
-                    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwa90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
                 ]
             },
             {
@@ -974,6 +1082,8 @@
                 price: 89.99,
                 description: "Set de 3 sartenes de diferentes tamaños",
                 category: "hogar",
+                supplier: "cocina express cll 10n #23-12 3204567890",
+                warehousePrice: 35.99,
                 productUrl: "https://ejemplo.com/productos/juego-sartenes",
                 images: [
                     "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -985,7 +1095,9 @@
                 title: "Balón de Fútbol Oficial",
                 price: 49.99,
                 description: "Balón de fútbol tamaño oficial para competencia",
-                category: "deportes",
+                category: "deporte",
+                supplier: "deportes cali av 6n #34-56 3189012345",
+                warehousePrice: 19.99,
                 productUrl: "https://ejemplo.com/productos/balon-futbol",
                 images: [
                     "https://images.unsplash.com/photo-1614632537197-38a17061c2bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -998,6 +1110,8 @@
                 price: 79.99,
                 description: "Altavoz portátil resistente al agua con 12h de batería",
                 category: "tecnologia",
+                supplier: "sonido digital cll 15 #45-67 3176543210",
+                warehousePrice: 32.99,
                 productUrl: "https://ejemplo.com/productos/altavoz-bluetooth",
                 images: [
                     "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -1010,6 +1124,8 @@
                 price: 129.99,
                 description: "Juego de 6 cuchillos profesionales de acero inoxidable",
                 category: "hogar",
+                supplier: "cuchilleria premium av 8n #12-34 3198765432",
+                warehousePrice: 49.99,
                 productUrl: "https://ejemplo.com/productos/set-cuchillos",
                 images: [
                     "https://images.unsplash.com/photo-1594736797933-d0401ba94693?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -1021,7 +1137,9 @@
                 title: "Mancuernas Ajustables",
                 price: 119.99,
                 description: "Par de mancuernas ajustables de 5 a 20 kg cada una",
-                category: "deportes",
+                category: "deporte",
+                supplier: "fitness store cra 45 #78-90 3123456789",
+                warehousePrice: 49.99,
                 productUrl: "https://ejemplo.com/productos/mancuernas-ajustables",
                 images: [
                     "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -1032,8 +1150,10 @@
                 id: 8,
                 title: "Tablet 10 Pulgadas",
                 price: 299.99,
-                description: "Tablet con pantalla Full HD y 64GB de almacenamiento",
+                description: "Tablet con pantalla Full HD and 64GB de almacenamiento",
                 category: "tecnologia",
+                supplier: "tech world cali cra 30 #56-78 3109876543",
+                warehousePrice: 149.99,
                 productUrl: "https://ejemplo.com/productos/tablet-10-pulgadas",
                 images: [
                     "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -1045,6 +1165,14 @@
         // Variables globales
         let cart = [];
         let currentDirectProduct = null;
+        let isDirectPurchase = false;
+        const ADMIN_KEY = "proveedor2024"; // Clave estática para acceso a precios de proveedor
+        
+        // Configuración predefinida de Nostr
+        const NOSTR_CONFIG = {
+            relay: "wss://relay.damus.io",
+            storePublicKey: "npub1contraentregaabc1234567890xyz"
+        };
         
         const cartIcon = document.getElementById('cartIcon');
         const cartCount = document.getElementById('cartCount');
@@ -1055,6 +1183,7 @@
         const whatsappBtn = document.getElementById('whatsappBtn');
         const smsBtn = document.getElementById('smsBtn');
         const emailBtn = document.getElementById('emailBtn');
+        const nostrBtn = document.getElementById('nostrBtn');
         const continueShopping = document.getElementById('continueShopping');
         const productsGrid = document.getElementById('productsGrid');
         const searchInput = document.getElementById('searchInput');
@@ -1073,7 +1202,14 @@
         const directWhatsappBtn = document.getElementById('directWhatsappBtn');
         const directSmsBtn = document.getElementById('directSmsBtn');
         const directEmailBtn = document.getElementById('directEmailBtn');
+        const directNostrBtn = document.getElementById('directNostrBtn');
         const cancelDirectPurchase = document.getElementById('cancelDirectPurchase');
+        
+        // Elementos para acceso de administrador
+        const adminKeyInput = document.getElementById('adminKey');
+        const adminAccessBtn = document.getElementById('adminAccessBtn');
+        const supplierTableContainer = document.getElementById('supplierTableContainer');
+        const supplierTableBody = document.getElementById('supplierTableBody');
 
         // Cargar productos en la página
         function loadProducts(productsToLoad) {
@@ -1130,6 +1266,7 @@
             if (!product) return;
             
             currentDirectProduct = product;
+            isDirectPurchase = true;
             
             // Mostrar información del producto en el modal
             directPurchaseProduct.innerHTML = `
@@ -1147,6 +1284,7 @@
             directWhatsappBtn.disabled = true;
             directSmsBtn.disabled = true;
             directEmailBtn.disabled = true;
+            directNostrBtn.disabled = true;
             
             // Mostrar modal
             directPurchaseModal.style.display = 'flex';
@@ -1278,6 +1416,7 @@
             whatsappBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
             smsBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
             emailBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
+            nostrBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
         }
 
         // Validar si se puede habilitar los botones de checkout para compra directa
@@ -1289,6 +1428,7 @@
             directWhatsappBtn.disabled = !(hasName && hasPhone && hasAddress);
             directSmsBtn.disabled = !(hasName && hasPhone && hasAddress);
             directEmailBtn.disabled = !(hasName && hasPhone && hasAddress);
+            directNostrBtn.disabled = !(hasName && hasPhone && hasAddress);
         }
 
         // Mostrar notificación
@@ -1397,6 +1537,39 @@
             return encodeURIComponent(message);
         }
 
+        // Generar mensaje de Nostr para el carrito
+        function generateNostrMessage() {
+            const remitente = getRemitenteInfo();
+            
+            let message = `Nuevo pedido de ${isDirectPurchase ? directCustomerName.value : customerName.value}:\n\n`;
+            
+            if (isDirectPurchase && currentDirectProduct) {
+                message += "PRODUCTO:\n";
+                message += `- ${currentDirectProduct.title}: $${currentDirectProduct.price.toFixed(2)}\n\n`;
+                message += `TOTAL: $${currentDirectProduct.price.toFixed(2)}\n\n`;
+            } else {
+                message += "PRODUCTOS:\n";
+                cart.forEach(item => {
+                    message += `- ${item.title} x${item.quantity}: $${(item.price * item.quantity).toFixed(2)}\n`;
+                });
+                
+                message += `\nTOTAL: $${cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}\n\n`;
+            }
+            
+            message += "INFORMACIÓN DEL CLIENTE:\n";
+            message += `Nombre: ${isDirectPurchase ? directCustomerName.value : customerName.value}\n`;
+            message += `Teléfono: ${isDirectPurchase ? directCustomerPhone.value : customerPhone.value}\n`;
+            message += `Dirección: ${isDirectPurchase ? directCustomerAddress.value : customerAddress.value}\n\n`;
+            
+            message += "INFORMACIÓN DEL REMITENTE:\n";
+            message += `Negocio: ${remitente.nombre}\n`;
+            message += `Correo: ${remitente.correo}\n`;
+            message += `Dirección: ${remitente.direccion}\n`;
+            message += `Teléfono: ${remitente.telefono}`;
+            
+            return message;
+        }
+
         // Generar mensaje de WhatsApp para compra directa
         function generateDirectWhatsAppMessage() {
             const remitente = getRemitenteInfo();
@@ -1458,6 +1631,104 @@
             return encodeURIComponent(message);
         }
 
+        // Enviar mensaje a través de Nostr
+        async function sendNostrMessage() {
+            const message = generateNostrMessage();
+            
+            try {
+                let pubkey;
+                let privateKeyData = null;
+                
+                // Intentar usar extensión NIP-07 (como Alby)
+                try {
+                    const signer = Nostr.getNip07Signer();
+                    pubkey = await signer.getPublicKey();
+                } catch (error) {
+                    // Si no hay extensión, pedir clave privada
+                    const privateKey = prompt('No se detectó extensión NIP-07. Por favor, ingresa tu clave privada Nostr (nsec) para firmar el mensaje:');
+                    
+                    if (!privateKey) {
+                        showNotification('Se necesita una clave privada para enviar el mensaje');
+                        return;
+                    }
+                    
+                    if (!privateKey.startsWith('nsec1')) {
+                        showNotification('Formato de clave privada inválido. Debe comenzar con nsec1');
+                        return;
+                    }
+                    
+                    try {
+                        const {data} = Nostr.nip19.decode(privateKey);
+                        privateKeyData = data;
+                        pubkey = Nostr.getPublicKey(data);
+                    } catch (error) {
+                        showNotification('Error al decodificar la clave privada');
+                        console.error(error);
+                        return;
+                    }
+                }
+                
+                // Crear evento
+                const event = {
+                    kind: 1,
+                    created_at: Math.floor(Date.now() / 1000),
+                    tags: [['p', NOSTR_CONFIG.storePublicKey]],
+                    content: message,
+                    pubkey: pubkey
+                };
+                
+                // Firmar evento
+                let signedEvent;
+                if (privateKeyData) {
+                    // Firmar con clave privada proporcionada
+                    signedEvent = await Nostr.signEvent(event, privateKeyData);
+                } else {
+                    // Firmar con extensión NIP-07
+                    const signer = Nostr.getNip07Signer();
+                    signedEvent = await signer.signEvent(event);
+                }
+                
+                // Publicar en relay
+                const relay = await Nostr.Relay.connect(NOSTR_CONFIG.relay);
+                await relay.publish(signedEvent);
+                relay.close();
+                
+                showNotification('¡Pedido enviado correctamente por Nostr!');
+                
+                if (isDirectPurchase) {
+                    directPurchaseModal.style.display = 'none';
+                } else {
+                    cartModal.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error al enviar por Nostr:', error);
+                showNotification('Error al enviar el pedido. Por favor, revisa tu configuración');
+            }
+        }
+
+        // Cargar tabla de precios de proveedor
+        function loadSupplierTable() {
+            supplierTableBody.innerHTML = '';
+            
+            products.forEach(product => {
+                const margin = ((product.price - product.warehousePrice) / product.warehousePrice * 100).toFixed(2);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td>${product.title}</td>
+                    <td>${product.category}</td>
+                    <td>$${product.warehousePrice.toFixed(2)}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td>${product.supplier}</td>
+                    <td>${margin}%</td>
+                `;
+                supplierTableBody.appendChild(row);
+            });
+            
+            supplierTableContainer.style.display = 'block';
+        }
+
         // Event Listeners
         cartIcon.addEventListener('click', () => {
             cartModal.style.display = 'flex';
@@ -1502,6 +1773,16 @@
             window.open(`mailto:calivalle@qrcontraentrega.com?subject=${subject}&body=${message}`, '_blank');
         });
 
+        nostrBtn.addEventListener('click', () => {
+            if (cart.length === 0) {
+                showNotification('El carrito está vacío');
+                return;
+            }
+            
+            isDirectPurchase = false;
+            sendNostrMessage();
+        });
+
         // Event Listeners para compra directa
         closeDirectPurchase.addEventListener('click', () => {
             directPurchaseModal.style.display = 'none';
@@ -1542,6 +1823,16 @@
             window.open(`mailto:calivalle@qrcontraentrega.com?subject=${subject}&body=${message}`, '_blank');
         });
 
+        directNostrBtn.addEventListener('click', () => {
+            if (!currentDirectProduct) {
+                showNotification('No hay producto seleccionado');
+                return;
+            }
+            
+            isDirectPurchase = true;
+            sendNostrMessage();
+        });
+
         searchInput.addEventListener('input', filterProducts);
 
         categoryBtns.forEach(btn => {
@@ -1561,6 +1852,22 @@
         directCustomerName.addEventListener('input', validateDirectCheckoutButton);
         directCustomerPhone.addEventListener('input', validateDirectCheckoutButton);
         directCustomerAddress.addEventListener('input', validateDirectCheckoutButton);
+
+        // Acceso de administrador
+        adminAccessBtn.addEventListener('click', () => {
+            if (adminKeyInput.value === ADMIN_KEY) {
+                loadSupplierTable();
+                showNotification('Acceso concedido. Tabla de proveedores cargada.');
+            } else {
+                showNotification('Clave incorrecta. Intenta nuevamente.');
+            }
+        });
+
+        adminKeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                adminAccessBtn.click();
+            }
+        });
 
         // Cerrar modal al hacer clic fuera de él
         window.addEventListener('click', (e) => {
