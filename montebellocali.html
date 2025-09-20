@@ -1171,7 +1171,7 @@
         // Configuración predefinida de Nostr
         const NOSTR_CONFIG = {
             relay: "wss://relay.damus.io",
-            storePublicKey: "npub1maautxg258sqerfet4stseju3jwq4yzjm84aw7typvddfxlk25jsnm9ce5"
+            storePublicKey: "npub1contraentregaabc1234567890xyz"
         };
         
         const cartIcon = document.getElementById('cartIcon');
@@ -1631,6 +1631,28 @@
             return encodeURIComponent(message);
         }
 
+        // Función mejorada para decodificar claves privadas
+        function decodePrivateKey(privateKey) {
+            try {
+                // Si es una clave nsec (comienza con nsec1)
+                if (privateKey.startsWith('nsec1')) {
+                    const { data } = Nostr.nip19.decode(privateKey);
+                    return data;
+                } 
+                // Si es una clave hexadecimal (64 caracteres)
+                else if (privateKey.length === 64 && /^[0-9a-fA-F]+$/.test(privateKey)) {
+                    return privateKey;
+                }
+                // Si no es ninguno de los formatos esperados
+                else {
+                    throw new Error('Formato de clave privada no reconocido');
+                }
+            } catch (error) {
+                console.error('Error al decodificar la clave privada:', error);
+                throw new Error('Clave privada inválida. Asegúrate de usar un formato nsec1 válido o una clave hexadecimal de 64 caracteres.');
+            }
+        }
+
         // Enviar mensaje a través de Nostr
         async function sendNostrMessage() {
             const message = generateNostrMessage();
@@ -1652,18 +1674,12 @@
                         return;
                     }
                     
-                    if (!privateKey.startsWith('nsec1')) {
-                        showNotification('Formato de clave privada inválido. Debe comenzar con nsec1');
-                        return;
-                    }
-                    
                     try {
-                        const {data} = Nostr.nip19.decode(privateKey);
-                        privateKeyData = data;
-                        pubkey = Nostr.getPublicKey(data);
-                    } catch (error) {
-                        showNotification('Error al decodificar la clave privada');
-                        console.error(error);
+                        // Usar la función mejorada para decodificar
+                        privateKeyData = decodePrivateKey(privateKey);
+                        pubkey = Nostr.getPublicKey(privateKeyData);
+                    } catch (decodeError) {
+                        showNotification(decodeError.message);
                         return;
                     }
                 }
@@ -1703,7 +1719,7 @@
                 
             } catch (error) {
                 console.error('Error al enviar por Nostr:', error);
-                showNotification('Error al enviar el pedido. Por favor, revisa tu configuración');
+                showNotification('Error al enviar el pedido: ' + error.message);
             }
         }
 
