@@ -16,7 +16,6 @@
             --color-verde: #25D366;
             --color-azul: #007bff;
             --color-rojo: #dc3545;
-            --color-telegram: #0088cc;
         }
         
         * {
@@ -467,20 +466,6 @@
             cursor: not-allowed;
         }
         
-        .telegram-btn {
-            background-color: var(--color-telegram);
-            color: white;
-        }
-        
-        .telegram-btn:hover {
-            background-color: #006699;
-        }
-        
-        .telegram-btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        
         .email-btn {
             background-color: var(--color-rojo);
             color: white;
@@ -615,30 +600,6 @@
             background-color: var(--color-gris-oscuro);
         }
         
-        /* Admin Controls */
-        .admin-controls {
-            display: none;
-            margin: 1rem 0;
-            text-align: center;
-        }
-        
-        .admin-controls button {
-            padding: 0.8rem 1.5rem;
-            margin: 0 0.5rem;
-            background-color: var(--color-azul);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-        
-        .admin-controls button:hover {
-            background-color: #0056b3;
-        }
-        
         /* Supplier Table */
         .supplier-table-container {
             display: none;
@@ -676,101 +637,6 @@
         
         .supplier-table tr:hover {
             background-color: rgba(0, 0, 0, 0.02);
-        }
-        
-        /* Inventory Modal */
-        .inventory-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .inventory-content {
-            background-color: var(--color-blanco);
-            width: 90%;
-            max-width: 800px;
-            border-radius: 8px;
-            padding: 2rem;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .inventory-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--color-gris-medio);
-        }
-        
-        .close-inventory {
-            font-size: 1.5rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-        
-        .inventory-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        .inventory-form .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .inventory-form .form-group.full-width {
-            grid-column: span 2;
-        }
-        
-        .inventory-form textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid var(--color-gris-medio);
-            border-radius: 4px;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 16px;
-            resize: vertical;
-        }
-        
-        .inventory-actions {
-            grid-column: span 2;
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-        }
-        
-        .inventory-actions button {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1rem;
-        }
-        
-        .btn-save {
-            background-color: var(--color-verde);
-            color: white;
-        }
-        
-        .btn-delete {
-            background-color: var(--color-rojo);
-            color: white;
-        }
-        
-        .btn-cancel {
-            background-color: var(--color-gris-medio);
-            color: var(--color-negro);
         }
         
         /* Footer */
@@ -863,7 +729,7 @@
                 flex-direction: column;
             }
             
-            .cart-content, .direct-purchase-content, .inventory-content {
+            .cart-content, .direct-purchase-content {
                 width: 95%;
                 padding: 1rem;
             }
@@ -884,20 +750,6 @@
             .checkout-btn {
                 padding: 0.8rem;
                 font-size: 0.9rem;
-            }
-            
-            .inventory-form {
-                grid-template-columns: 1fr;
-            }
-            
-            .inventory-form .form-group.full-width {
-                grid-column: span 1;
-            }
-            
-            .inventory-actions {
-                grid-column: span 1;
-                flex-direction: column;
-                gap: 0.5rem;
             }
         }
         
@@ -1131,12 +983,7 @@
                 <button id="adminAccessBtn">Acceder</button>
             </div>
         </div>
-        
-        <!-- Admin Controls -->
-        <div class="admin-controls" id="adminControls">
-            <button id="adjustInventoryBtn">Ajustar Inventario</button>
-        </div>
-
+    
     <!-- Supplier Table -->
         <div class="supplier-table-container" id="supplierTableContainer">
             <table class="supplier-table">
@@ -1149,89 +996,12 @@
                         <th>Precio Venta</th>
                         <th>Proveedor</th>
                         <th>Margen</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="supplierTableBody">
                     <!-- Los datos se cargarán dinámicamente -->
                 </tbody>
             </table>
-        </div>
-
-        <!-- Inventory Modal -->
-        <div class="inventory-modal" id="inventoryModal">
-            <div class="inventory-content">
-                <div class="inventory-header">
-                    <h2>Ajustar Inventario</h2>
-                    <button class="close-inventory" id="closeInventory">&times;</button>
-                </div>
-                
-                <form id="inventoryForm" class="inventory-form">
-                    <input type="hidden" id="productId">
-                    
-                    <div class="form-group">
-                        <label for="productTitle">Nombre del Producto *</label>
-                        <input type="text" id="productTitle" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="productPrice">Precio de Venta *</label>
-                        <input type="number" id="productPrice" min="0" step="0.01" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="warehousePrice">Precio de Proveedor *</label>
-                        <input type="number" id="warehousePrice" min="0" step="0.01" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="productCategory">Categoría *</label>
-                        <select id="productCategory" required>
-                            <option value="">Seleccione una categoría</option>
-                            <option value="cocina">Cocina</option>
-                            <option value="belleza">Belleza</option>
-                            <option value="hogar">Hogar</option>
-                            <option value="vehiculos">Vehiculos</option>
-                            <option value="mascotas">Mascotas</option>
-                            <option value="moda">Moda</option>
-                            <option value="bienestar">Bienestar</option>
-                            <option value="infantil">Infantil</option>
-                            <option value="deporte">Deporte</option>
-                            <option value="Gadgets">Gadgets</option>
-                            <option value="tecnologia">Tecnología</option>
-                            <option value="packing-list">Packing List</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="productSupplier">Proveedor *</label>
-                        <input type="text" id="productSupplier" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="productUrl">URL del Producto</label>
-                        <input type="url" id="productUrl">
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="productDescription">Descripción *</label>
-                        <textarea id="productDescription" rows="3" required></textarea>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="productImages">Imágenes (URLs separadas por coma)</label>
-                        <textarea id="productImages" rows="2"></textarea>
-                    </div>
-                    
-                    <div class="inventory-actions">
-                        <button type="button" class="btn-delete" id="deleteProductBtn">Eliminar Producto</button>
-                        <div>
-                            <button type="button" class="btn-cancel" id="cancelInventoryBtn">Cancelar</button>
-                            <button type="submit" class="btn-save">Guardar Producto</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
 
     <!-- Footer -->
@@ -1267,7 +1037,7 @@
 
     <script>
         // Base de datos de productos (simulada)
-        let products = [
+        const products = [
             {
                 id: 1,
                 title: "Auriculares Inalámbricos",
@@ -1385,7 +1155,6 @@
         // Variables globales
         let cart = [];
         let currentDirectProduct = null;
-        let editingProductId = null;
         const ADMIN_KEY = "proveedor2024"; // Clave estática para acceso a precios de proveedor
         
         const cartIcon = document.getElementById('cartIcon');
@@ -1395,7 +1164,6 @@
         const cartItems = document.getElementById('cartItems');
         const cartTotal = document.getElementById('cartTotal');
         const whatsappBtn = document.getElementById('whatsappBtn');
-        const telegramBtn = document.getElementById('telegramBtn');
         const emailBtn = document.getElementById('emailBtn');
         const continueShopping = document.getElementById('continueShopping');
         const productsGrid = document.getElementById('productsGrid');
@@ -1413,33 +1181,14 @@
         const directCustomerPhone = document.getElementById('directCustomerPhone');
         const directCustomerAddress = document.getElementById('directCustomerAddress');
         const directWhatsappBtn = document.getElementById('directWhatsappBtn');
-        const directTelegramBtn = document.getElementById('directTelegramBtn');
         const directEmailBtn = document.getElementById('directEmailBtn');
         const cancelDirectPurchase = document.getElementById('cancelDirectPurchase');
         
         // Elementos para acceso de administrador
         const adminKeyInput = document.getElementById('adminKey');
         const adminAccessBtn = document.getElementById('adminAccessBtn');
-        const adminControls = document.getElementById('adminControls');
-        const adjustInventoryBtn = document.getElementById('adjustInventoryBtn');
         const supplierTableContainer = document.getElementById('supplierTableContainer');
         const supplierTableBody = document.getElementById('supplierTableBody');
-        
-        // Elementos para modal de inventario
-        const inventoryModal = document.getElementById('inventoryModal');
-        const closeInventory = document.getElementById('closeInventory');
-        const inventoryForm = document.getElementById('inventoryForm');
-        const productIdInput = document.getElementById('productId');
-        const productTitleInput = document.getElementById('productTitle');
-        const productPriceInput = document.getElementById('productPrice');
-        const warehousePriceInput = document.getElementById('warehousePrice');
-        const productCategoryInput = document.getElementById('productCategory');
-        const productSupplierInput = document.getElementById('productSupplier');
-        const productUrlInput = document.getElementById('productUrl');
-        const productDescriptionInput = document.getElementById('productDescription');
-        const productImagesInput = document.getElementById('productImages');
-        const deleteProductBtn = document.getElementById('deleteProductBtn');
-        const cancelInventoryBtn = document.getElementById('cancelInventoryBtn');
 
         // Cargar productos en la página
         function loadProducts(productsToLoad) {
@@ -1511,7 +1260,6 @@
             directCustomerPhone.value = '';
             directCustomerAddress.value = '';
             directWhatsappBtn.disabled = true;
-            directTelegramBtn.disabled = true;
             directEmailBtn.disabled = true;
             
             // Mostrar modal
@@ -1642,7 +1390,6 @@
             const hasAddress = customerAddress.value.trim() !== '';
             
             whatsappBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
-            telegramBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
             emailBtn.disabled = !(hasItems && hasName && hasPhone && hasAddress);
         }
 
@@ -1653,7 +1400,6 @@
             const hasAddress = directCustomerAddress.value.trim() !== '';
             
             directWhatsappBtn.disabled = !(hasName && hasPhone && hasAddress);
-            directTelegramBtn.disabled = !(hasName && hasPhone && hasAddress);
             directEmailBtn.disabled = !(hasName && hasPhone && hasAddress);
         }
 
@@ -1720,32 +1466,6 @@
             return encodeURIComponent(message);
         }
 
-        // Generar mensaje de Telegram para el carrito
-        function generateTelegramMessage() {
-            const remitente = getRemitenteInfo();
-            
-            let message = "¡Hola! Quiero realizar la siguiente compra:%0A%0A";
-            
-            cart.forEach(item => {
-                message += `- ${item.title} x${item.quantity}: $${(item.price * item.quantity).toFixed(2)}%0A`;
-            });
-            
-            message += `%0ATotal: $${cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}`;
-            message += `%0A%0AMi información de envío es:%0A`;
-            message += `Nombre: ${customerName.value}%0A`;
-            message += `Teléfono: ${customerPhone.value}%0A`;
-            message += `Dirección: ${customerAddress.value}`;
-            
-            // Añadir información del remitente
-            message += `%0A%0AInformación del remitente:%0A`;
-            message += `Negocio: ${remitente.nombre}%0A`;
-            message += `Correo: ${remitente.correo}%0A`;
-            message += `Dirección: ${remitente.direccion}%0A`;
-            message += `Teléfono: ${remitente.telefono}`;
-            
-            return message;
-        }
-
         // Generar mensaje de correo para el carrito
         function generateEmailMessage() {
             const remitente = getRemitenteInfo();
@@ -1795,29 +1515,6 @@
             return encodeURIComponent(message);
         }
 
-        // Generar mensaje de Telegram para compra directa
-        function generateDirectTelegramMessage() {
-            const remitente = getRemitenteInfo();
-            
-            let message = "¡Hola! Quiero comprar el siguiente producto:%0A%0A";
-            
-            message += `- ${currentDirectProduct.title}: $${currentDirectProduct.price.toFixed(2)}%0A`;
-            message += `%0ATotal: $${currentDirectProduct.price.toFixed(2)}`;
-            message += `%0A%0AMi información de envío es:%0A`;
-            message += `Nombre: ${directCustomerName.value}%0A`;
-            message += `Teléfono: ${directCustomerPhone.value}%0A`;
-            message += `Dirección: ${directCustomerAddress.value}`;
-            
-            // Añadir información del remitente
-            message += `%0A%0AInformación del remitente:%0A`;
-            message += `Negocio: ${remitente.nombre}%0A`;
-            message += `Correo: ${remitente.correo}%0A`;
-            message += `Dirección: ${remitente.direccion}%0A`;
-            message += `Teléfono: ${remitente.telefono}`;
-            
-            return message;
-        }
-
         // Generar mensaje de correo para compra directa
         function generateDirectEmailMessage() {
             const remitente = getRemitenteInfo();
@@ -1833,7 +1530,7 @@
             message += `Teléfono: ${directCustomerPhone.value}\n`;
             message += `Dirección: ${directCustomerAddress.value}\n\n`;
             
-            message += "INFORMACIÓN DEL REMITente:\n";
+            message += "INFORMACIÓN DEL REMITENTE:\n";
             message += `Negocio: ${remitente.nombre}\n`;
             message += `Correo: ${remitente.correo}\n`;
             message += `Dirección: ${remitente.direccion}\n`;
@@ -1857,94 +1554,11 @@
                     <td>$${product.price.toFixed(2)}</td>
                     <td>${product.supplier}</td>
                     <td>${margin}%</td>
-                    <td>
-                        <button class="edit-product" data-id="${product.id}">Editar</button>
-                    </td>
                 `;
                 supplierTableBody.appendChild(row);
             });
             
-            // Agregar event listeners a los botones de editar
-            document.querySelectorAll('.edit-product').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const productId = parseInt(e.target.getAttribute('data-id'));
-                    openInventoryModal(productId);
-                });
-            });
-            
             supplierTableContainer.style.display = 'block';
-        }
-
-        // Abrir modal de inventario
-        function openInventoryModal(productId = null) {
-            editingProductId = productId;
-            
-            if (productId) {
-                // Modo edición: cargar datos del producto
-                const product = products.find(p => p.id === productId);
-                if (product) {
-                    productIdInput.value = product.id;
-                    productTitleInput.value = product.title;
-                    productPriceInput.value = product.price;
-                    warehousePriceInput.value = product.warehousePrice;
-                    productCategoryInput.value = product.category;
-                    productSupplierInput.value = product.supplier;
-                    productUrlInput.value = product.productUrl || '';
-                    productDescriptionInput.value = product.description;
-                    productImagesInput.value = product.images.join(', ');
-                    
-                    deleteProductBtn.style.display = 'block';
-                }
-            } else {
-                // Modo creación: limpiar formulario
-                inventoryForm.reset();
-                const nextId = Math.max(...products.map(p => p.id), 0) + 1;
-                productIdInput.value = nextId;
-                deleteProductBtn.style.display = 'none';
-            }
-            
-            inventoryModal.style.display = 'flex';
-        }
-
-        // Guardar producto (crear o actualizar)
-        function saveProduct(productData) {
-            if (editingProductId) {
-                // Actualizar producto existente
-                const index = products.findIndex(p => p.id === editingProductId);
-                if (index !== -1) {
-                    products[index] = {...products[index], ...productData};
-                }
-            } else {
-                // Crear nuevo producto
-                products.push(productData);
-            }
-            
-            // Recargar productos y tabla de proveedores
-            loadProducts(products);
-            loadSupplierTable();
-            
-            showNotification(editingProductId ? 'Producto actualizado' : 'Producto creado');
-            closeInventoryModal();
-        }
-
-        // Eliminar producto
-        function deleteProduct() {
-            if (editingProductId && confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-                products = products.filter(p => p.id !== editingProductId);
-                
-                // Recargar productos y tabla de proveedores
-                loadProducts(products);
-                loadSupplierTable();
-                
-                showNotification('Producto eliminado');
-                closeInventoryModal();
-            }
-        }
-
-        // Cerrar modal de inventario
-        function closeInventoryModal() {
-            inventoryModal.style.display = 'none';
-            editingProductId = null;
         }
 
         // Event Listeners
@@ -1968,16 +1582,6 @@
             
             const message = generateWhatsAppMessage();
             window.open(`https://wa.me/573146824438?text=${message}`, '_blank');
-        });
-
-        telegramBtn.addEventListener('click', () => {
-            if (cart.length === 0) {
-                showNotification('El carrito está vacío');
-                return;
-            }
-            
-            const message = generateTelegramMessage();
-            window.open(`https://t.me/share/url?url=&text=${message}`, '_blank');
         });
 
         emailBtn.addEventListener('click', () => {
@@ -2008,16 +1612,6 @@
             
             const message = generateDirectWhatsAppMessage();
             window.open(`https://wa.me/573146824438?text=${message}`, '_blank');
-        });
-
-        directTelegramBtn.addEventListener('click', () => {
-            if (!currentDirectProduct) {
-                showNotification('No hay producto seleccionado');
-                return;
-            }
-            
-            const message = generateDirectTelegramMessage();
-            window.open(`https://t.me/share/url?url=&text=${message}`, '_blank');
         });
 
         directEmailBtn.addEventListener('click', () => {
@@ -2054,7 +1648,6 @@
         // Acceso de administrador
         adminAccessBtn.addEventListener('click', () => {
             if (adminKeyInput.value === ADMIN_KEY) {
-                adminControls.style.display = 'block';
                 loadSupplierTable();
                 showNotification('Acceso concedido. Tabla de proveedores cargada.');
             } else {
@@ -2068,34 +1661,6 @@
             }
         });
 
-        // Ajustar inventario
-        adjustInventoryBtn.addEventListener('click', () => {
-            openInventoryModal();
-        });
-
-        // Modal de inventario
-        closeInventory.addEventListener('click', closeInventoryModal);
-        cancelInventoryBtn.addEventListener('click', closeInventoryModal);
-        deleteProductBtn.addEventListener('click', deleteProduct);
-
-        inventoryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const productData = {
-                id: parseInt(productIdInput.value),
-                title: productTitleInput.value,
-                price: parseFloat(productPriceInput.value),
-                warehousePrice: parseFloat(warehousePriceInput.value),
-                description: productDescriptionInput.value,
-                category: productCategoryInput.value,
-                supplier: productSupplierInput.value,
-                productUrl: productUrlInput.value,
-                images: productImagesInput.value.split(',').map(url => url.trim()).filter(url => url)
-            };
-            
-            saveProduct(productData);
-        });
-
         // Cerrar modal al hacer clic fuera de él
         window.addEventListener('click', (e) => {
             if (e.target === cartModal) {
@@ -2103,9 +1668,6 @@
             }
             if (e.target === directPurchaseModal) {
                 directPurchaseModal.style.display = 'none';
-            }
-            if (e.target === inventoryModal) {
-                closeInventoryModal();
             }
         });
 
